@@ -13,6 +13,7 @@
 
 
 //utilizo esta funcion booleana para corroborar si el email existe
+//esta funcion DEBE ir en este archivo ya que es el encargado de hacer consultas a la base de datos
 function emailExiste($conn, $email)
 {   // preparo el statement para hacer la consulta a mysql. cuento todos los emails iguales
     $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM students WHERE email = ?"); 
