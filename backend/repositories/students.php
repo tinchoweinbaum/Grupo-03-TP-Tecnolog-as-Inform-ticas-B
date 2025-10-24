@@ -9,6 +9,19 @@
 *    Iteration   : 2.0 ( prototype )
 */
 
+function emailExiste($conn, $email)
+{
+    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM students WHERE email = ?");
+    $stmt->bind_param("s",$email);
+    $stmt->execute();
+    
+    $result = $stmt->get_result();
+    $cont = $result->fetch_assoc();
+
+
+    return $cont['total'] > 0;
+}
+
 function getAllStudents($conn) 
 {
     $sql = "SELECT * FROM students";
