@@ -46,16 +46,29 @@ function handlePost($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
 
-    $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
-    if ($result['inserted'] > 0) 
+
+    // agrego la condicion del if para verificar si el email ya existe
+    //le paso los parametros conn para conectarme a la base de datos e input para pasarle el dato email
+    if(emailExiste($conn, $input['email']))
     {
-        echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo agregar"]);
+        http_response_code(400); // el error 400 de http significa bad request, peticion incorrecta a la base de datos
+        echo json_encode(["error" => "el correo ya esta registrado"]);
     }
+
+
+    else
+    {
+        $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
+        if ($result['inserted'] > 0) 
+        {
+            echo json_encode(["message" => "Estudiante agregado correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo agregar"]);
+        }
+    }   
 }
 
 function handlePut($conn) 
