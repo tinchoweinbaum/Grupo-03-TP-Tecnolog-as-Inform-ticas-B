@@ -54,6 +54,19 @@ function getSubjectsByStudent($conn, $student_id)
     return $result->fetch_all(MYSQLI_ASSOC); 
 }
 
+//modificacion de funcion anterior para validacion 4) (estudiantes asignados)
+function getAssignedStudentCases($conn, $student_id) 
+{
+    $sql = "SELECT * FROM students_subjects ss
+        WHERE ss.student_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+    $result= $stmt->get_result();
+
+    return $result->num_rows; //bien para devolver cant. casos?? 
+}
+
 function updateStudentSubject($conn, $id, $student_id, $subject_id, $approved) 
 {
     $sql = "UPDATE students_subjects 

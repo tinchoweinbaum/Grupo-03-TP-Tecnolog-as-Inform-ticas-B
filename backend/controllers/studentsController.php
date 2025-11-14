@@ -10,6 +10,7 @@
 */
 
 require_once("./repositories/students.php");
+require_once("./repositories/studentsSubjects.php"); //en repositorio desarrollo funcion que valida estudiante segun asignaciones
 
 // Para GET (usamos la variable superglobal $_GET):
 //https://www.php.net/manual/es/language.variables.superglobals.php
@@ -76,17 +77,25 @@ function handlePut($conn)
 
 function handleDelete($conn) 
 {
-    $input = json_decode(file_get_contents("php://input"), true);
+     $input = json_decode(file_get_contents("php://input"), true);
 
-    $result = deleteStudent($conn, $input['id']);
-    if ($result['deleted'] > 0) 
-    {
-        echo json_encode(["message" => "Eliminado correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo eliminar"]);
+    if(!getAssignedStudentCases($conn,$input['id'])) { //implica que al menos una vez asignado ya
+        
+        $result = deleteStudent($conn, $input['id']);
+
+        if ($result['deleted'] > 0) 
+        {
+            echo json_encode(["message" => "Eliminado correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo eliminar"]);
+        }    
+    }
+    else {
+        http_response_code(409);
+        echo json_encode(["error"=>"No se puede eliminar estudiante hasta que se eliminen asignaciones con materias"]);
     }
 }
 ?>

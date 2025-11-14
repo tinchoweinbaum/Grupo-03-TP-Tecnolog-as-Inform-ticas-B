@@ -186,7 +186,11 @@ async function confirmDelete(id)
     } 
     catch (err) 
     {
-        console.error('Error al borrar:', err.message);
+        //pregunta si es error por ya asociado, con codigo 409
+        if (err.status === 409) {
+            alert(err.message); //muestra el mensaje enviado desde el backend
+        }
+        console.log('Error al borrar:', err);
     }
 }
   
