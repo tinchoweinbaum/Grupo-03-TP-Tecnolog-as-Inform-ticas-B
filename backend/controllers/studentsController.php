@@ -79,7 +79,7 @@ function handleDelete($conn)
 {
      $input = json_decode(file_get_contents("php://input"), true);
 
-    if(!getAssignedStudentCases($conn,$input['id'])) { //implica que al menos una vez asignado ya
+    if(!getAssignedStudentCases($conn,$input['id'])) { //si devuelve 1 o mas casos, entonces es falso, ya asignado
         
         $result = deleteStudent($conn, $input['id']);
 

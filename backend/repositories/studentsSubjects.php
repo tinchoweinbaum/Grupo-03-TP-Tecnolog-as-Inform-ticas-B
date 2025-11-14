@@ -64,7 +64,7 @@ function getAssignedStudentCases($conn, $student_id)
     $stmt->execute();
     $result= $stmt->get_result();
 
-    return $result->num_rows; //bien para devolver cant. casos?? 
+    return $result->num_rows; //devuelve cant. casos
 }
 
 function updateStudentSubject($conn, $id, $student_id, $subject_id, $approved) 
