@@ -52,18 +52,29 @@ async function initSelects()
     }
 }
 
+function valRelacionFront(studId,subjId){
+    
+}
+
 function setupFormHandler() 
 {
     const form = document.getElementById('relationForm');
+
+    /*Listener del boton de guardar*/
     form.addEventListener('submit', async e => 
     {
-        e.preventDefault();
+        e.preventDefault(); /*Hace que no se refreshee toda la pagina*/
 
         const relation = getFormData();
+        
+        if(valRelacionFront(relation.student_id,relation.subject_id)){
+            alert("Ya existe la relacion alumno/materia especificada.");
+            return;
+        }
 
         try 
         {
-            if (relation.id) 
+            if (relation.id) /*verifica si es creacion o edición*/
             {
                 await studentsSubjectsAPI.update(relation);
             } 
