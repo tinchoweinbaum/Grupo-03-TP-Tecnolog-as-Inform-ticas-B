@@ -14,8 +14,12 @@ require_once("./repositories/subjects.php");
 function handleGet($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
-
-    if (isset($input['id'])) 
+    if (isset($_GET['name'])){
+        $name = trim($_GET['name']);
+        $subject = getSubjectByName($conn, $name);
+        echo json_encode($subject);
+    }
+    else if (isset($input['id'])) 
     {
         $subject = getSubjectById($conn, $input['id']);
         echo json_encode($subject);
@@ -44,17 +48,25 @@ function handleGet($conn)
 function handlePost($conn) 
 {
     $input = json_decode(file_get_contents("php://input"), true);
+    //podria validar que venga el nombre ... 
+    $subject = getSubjectByName($conn, $input['name']);
 
-    $result = createSubject($conn, $input['name']);
-    if ($result['inserted'] > 0) 
-    {
-        echo json_encode(["message" => "Materia creada correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo crear"]);
+    if($subject===null){ //correcto, todavia no existe
+        $result = createSubject($conn, $input['name']);
+        if ($result['inserted'] > 0) 
+        {
+            echo json_encode(["message" => "Materia creada correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo crear"]);
+        }
+    }else{ //incorrecto, la materia ya existe
+        http_response_code(409); //o 422, no estoy seguro
+        echo json_encode(["error" => "La materia ya existe"]);      
     }
+    
 }
 
 function handlePut($conn) 
