@@ -51,7 +51,7 @@ CREATE TABLE `subjects` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`) --Si no lo hubiera, deberia agregar el UNIQUE. Esto garantiza que no existan 2 materias con el mismo nombre, incluso si fallan las validaciones tanto en el back como en el front, manteniendo la coherencia del sistema y la integridad de los datos
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `subjects` (`id`, `name`) VALUES
