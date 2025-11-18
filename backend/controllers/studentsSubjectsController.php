@@ -13,6 +13,28 @@ require_once("./repositories/studentsSubjects.php");
 
 function handleGet($conn) 
 {
+    //logica especifica a validacion por front de estudiante ya en asignacion (ej. 4)
+    if (isset($_GET['student_id'])) 
+    {
+        $student_id = intval($_GET['student_id']);
+        $stmt = $conn->prepare("SELECT * FROM students_subjects WHERE student_id = ?");
+        if (!$stmt) {
+            http_response_code(500);
+            echo json_encode(["error" => "Error preparando consulta: " . $conn->error]);
+            return;
+        }
+        $stmt->bind_param("i", $student_id); 
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $studentsSubjects = [];
+        while ($row = $result->fetch_assoc()) {
+            $studentsSubjects[] = $row;
+        }
+        $stmt->close();
+        echo json_encode($studentsSubjects);
+        return;
+    }
+
     $studentsSubjects = getAllSubjectsStudents($conn);
     echo json_encode($studentsSubjects);
 }

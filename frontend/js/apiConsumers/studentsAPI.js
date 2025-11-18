@@ -9,4 +9,18 @@
 */
 
 import { createAPI } from './apiFactory.js';
-export const studentsAPI = createAPI('students');
+const baseAPI = createAPI('students');
+
+//extension de students api para el chequeo por front de si estudiante ya asignado
+export const studentsAPI = { 
+    ...baseAPI,
+
+    async checkIfAssignedStudent(id) {
+        const API_URL = `../../backend/server.php?module=studentsSubjects&student_id=${encodeURIComponent(id)}`;
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Error al chequear asignacion");
+        const data = await res.json();
+        // Retorna true si tiene asignaciones
+        return Array.isArray(data) && data.length > 0;
+    }
+};

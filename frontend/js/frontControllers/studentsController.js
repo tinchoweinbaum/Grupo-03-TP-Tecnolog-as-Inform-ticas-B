@@ -199,15 +199,23 @@ function fillForm(student)
 async function confirmDelete(id) 
 {
     if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return;
-  
+
     try 
     {
-        await studentsAPI.remove(id);
-        loadStudents();
+        const yaAsignado = await studentsAPI.checkIfAssignedStudent(id);
+
+        if (yaAsignado) {
+            alert('Estudiante ya asignado'); //valida por front si ya esta asignado estudiante
+            return;
+        }else{
+            await studentsAPI.remove(id);
+            loadStudents();
+        }
     } 
     catch (err) 
     {
-        console.error('Error al borrar:', err.message);
+        alert(err.message);
+        console.log(err.message);
     }
 }
   
