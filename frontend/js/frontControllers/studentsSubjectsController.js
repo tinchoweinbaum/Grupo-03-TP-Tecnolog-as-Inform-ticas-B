@@ -52,18 +52,38 @@ async function initSelects()
     }
 }
 
+function valRelacionFront(studId, subjId, allRelations) {
+    for (let i = 0; i < allRelations.length; i++) {
+        
+        const actRelation = allRelations[i];
+        if (actRelation.student_id == studId && actRelation.subject_id == subjId)
+            return true;
+    }
+
+    return false;
+}
+
 function setupFormHandler() 
 {
     const form = document.getElementById('relationForm');
+
+    /*Listener del boton de guardar*/
     form.addEventListener('submit', async e => 
     {
-        e.preventDefault();
+        e.preventDefault(); /*Hace que no se refreshee toda la pagina*/
 
-        const relation = getFormData();
+        const relation = getFormData(); //relation tiene los datos ingresados x el usuario en un objeto.
+
+        const allRelations = await studentsSubjectsAPI.fetchAll(); //await hace que la ejecución espere a que la API termine de traer los datos del back
+        
+        if(valRelacionFront(relation.student_id,relation.subject_id,allRelations)){
+            alert("Ya existe la relacion alumno/materia especificada.");
+            return;
+        }
 
         try 
         {
-            if (relation.id) 
+            if (relation.id) /*verifica si es creacion o edición*/
             {
                 await studentsSubjectsAPI.update(relation);
             } 

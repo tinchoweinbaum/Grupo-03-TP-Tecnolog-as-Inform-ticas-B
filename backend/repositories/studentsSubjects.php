@@ -9,8 +9,40 @@
 *    Iteration   : 1.0 ( prototype )
 */
 
-function assignSubjectToStudent($conn, $student_id, $subject_id, $approved) 
-{
+#$conn es la variable que tiene guardad la conexion sql abierta, es un objeto de la clase mysqli nativa de php
+#$student_id es la id del estudiante a verificar
+#$subject_id es la id de la materia a verificar
+function existeAssign($conn, $student_id, $subject_id) { 
+
+    $query = "SELECT COUNT(*) AS existe
+              FROM students_subjects
+              WHERE student_id = ? AND subject_id = ?
+              LIMIT 1";
+    # LIMIT 1 hace que MySQL deje de buscar cuando encuentra una coincidencia.
+    # COUNT(*) siempre devuelve una fila con un valor (0 o 1 en este caso).
+
+    $statement = $conn->prepare($query); #prepara la query pero todavía no la ejecuta, devuelve un objeto statement.
+
+    $statement->bind_param("ii", $student_id, $subject_id); #Reemplaza los placeholders de la query (?). "ii" = integer, integer.
+
+    $statement->execute(); # Ejecuta la query.
+
+    $resultSql = $statement->get_result(); #Devuelve un objeto mysqli_result con la fila de resultado.
+
+    $filaRes = $resultSql->fetch_assoc(); #Convierte esa fila en un array asociativo que tiene un solo campo que se llama "existe"
+
+    return $filaRes["existe"] == 1;
+}
+
+
+function assignSubjectToStudent($conn, $student_id, $subject_id, $approved){
+    if (existeAssign($conn,$student_id,$subject_id)){
+        return[
+            'inserted' => 0,
+            'error' => 'Ya existe la asignación alumno/materia'
+        ];
+    }
+
     $sql = "INSERT INTO students_subjects (student_id, subject_id, approved) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iii", $student_id, $subject_id, $approved);
@@ -52,6 +84,21 @@ function getSubjectsByStudent($conn, $student_id)
     $result= $stmt->get_result();
 
     return $result->fetch_all(MYSQLI_ASSOC); 
+}
+
+//modificacion de funcion anterior para validacion 4) (estudiantes asignados)
+function checkIfAssignedStudentCases($conn, $student_id) 
+{
+    $sql = "SELECT * FROM students_subjects ss
+        WHERE ss.student_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $student_id);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    $stmt->close();
+    return $row['total'] > 0;
 }
 
 function updateStudentSubject($conn, $id, $student_id, $subject_id, $approved) 

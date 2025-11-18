@@ -10,6 +10,7 @@
 */
 
 require_once("./repositories/students.php");
+require_once("./repositories/studentsSubjects.php"); //en repositorio desarrollo funcion que valida estudiante segun asignaciones
 
 // Para GET (usamos la variable superglobal $_GET):
 //https://www.php.net/manual/es/language.variables.superglobals.php
@@ -46,16 +47,29 @@ function handlePost($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
 
-    $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
-    if ($result['inserted'] > 0) 
+
+    // agrego la condicion del if para verificar si el email ya existe
+    //le paso los parametros conn para conectarme a la base de datos e input para pasarle el dato email
+    if(emailExiste($conn, $input['email']))
     {
-        echo json_encode(["message" => "Estudiante agregado correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo agregar"]);
+        http_response_code(400); // el error 400 de http significa bad request, peticion incorrecta a la base de datos
+        echo json_encode(["error" => "el correo ya esta registrado"]);
     }
+
+
+    else
+    {
+        $result = createStudent($conn, $input['fullname'], $input['email'], $input['age']);
+        if ($result['inserted'] > 0) 
+        {
+            echo json_encode(["message" => "Estudiante agregado correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo agregar"]);
+        }
+    }   
 }
 
 function handlePut($conn) 
@@ -78,15 +92,22 @@ function handleDelete($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
 
-    $result = deleteStudent($conn, $input['id']);
-    if ($result['deleted'] > 0) 
-    {
-        echo json_encode(["message" => "Eliminado correctamente"]);
-    } 
-    else 
-    {
-        http_response_code(500);
-        echo json_encode(["error" => "No se pudo eliminar"]);
+    if(checkIfAssignedStudentCases($conn,$input['id'])) { //ya asignado 
+        http_response_code(409);
+        echo json_encode(["error"=>"Estudiante ya en asignaciones"]);    
+    }
+    else {
+        $result = deleteStudent($conn, $input['id']);
+
+        if ($result['deleted'] > 0) 
+        {
+            echo json_encode(["message" => "Eliminado correctamente"]);
+        } 
+        else 
+        {
+            http_response_code(500);
+            echo json_encode(["error" => "No se pudo eliminar"]);
+        }
     }
 }
 ?>
