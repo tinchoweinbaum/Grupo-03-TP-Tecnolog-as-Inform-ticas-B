@@ -16,11 +16,11 @@ export const studentsAPI = {
     ...baseAPI,
 
     async checkAssignedStudent(id) {
-        const API_URL = `../../backend/server.php?module=${'studentsSubjects'}`; 
-        const url = `${API_URL}&name=${encodeURIComponent(id)}`;
-        const res = await fetch(url);
+        const API_URL = `../../backend/server.php?module=studentsSubjects&student_id=${encodeURIComponent(id)}`;
+        const res = await fetch(API_URL);
         if (!res.ok) throw new Error("Error al chequear asignacion");
         const data = await res.json();
-        return data !== null;
+        // Retorna true si tiene asignaciones
+        return Array.isArray(data) && data.length > 0;
     }
 };
