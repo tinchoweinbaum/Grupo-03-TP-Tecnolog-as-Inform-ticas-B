@@ -16,6 +16,21 @@ let currentPage = 1;
 let totalPages = 1;
 const limit = 5;
 
+
+//esta funcion consulta al backend TODOS los estudiantes y comprueba si alguno tiene el email ya registrado
+async function emailExisteFront(email) {
+    const allStudents = await studentsAPI.fetchAll();//le pido al back la lista completa de los estudiantes y el await es por que esa funcion va a tardar entonces quiero que espere la respuesta
+
+    for (let i = 0; i < allStudents.length; i++) {//hago un for recorriendo todos los estudiantes para ver si alguno tiene el mismo email
+        if (allStudents[i].email === email) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 document.addEventListener('DOMContentLoaded', () => 
 {
     loadStudents();
@@ -24,33 +39,39 @@ document.addEventListener('DOMContentLoaded', () =>
     setupPaginationControls();//2.0
 });
   
-function setupFormHandler()
-{
+function setupFormHandler() {
     const form = document.getElementById('studentForm');
-    form.addEventListener('submit', async e => 
-    {
+
+    form.addEventListener('submit', async e => {
         e.preventDefault();
+
         const student = getFormData();
-    
-        try 
-        {
-            if (student.id) 
-            {
+
+        if (!student.id) {//agregue este if para el caso en el que se va a crear un estudiante
+            const existe = await emailExisteFront(student.email);//llamo para saber si el email existe, el await es por que va a tardar
+            if (existe) {//si el email ya existe
+                alert("El email ya está registrado.");
+                return;
+            }
+        }
+
+        try {
+            if (student.id) {
                 await studentsAPI.update(student);
-            } 
-            else 
-            {
+            } else {
                 await studentsAPI.create(student);
             }
+
             clearForm();
             loadStudents();
         }
-        catch (err)
-        {
+        catch (err) {
+            alert(err.message);
             console.error(err.message);
         }
     });
 }
+
 
 function setupCancelHandler()
 {
