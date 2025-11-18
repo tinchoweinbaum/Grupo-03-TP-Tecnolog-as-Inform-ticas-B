@@ -181,7 +181,7 @@ async function confirmDelete(id)
 
     try 
     {
-        const yaAsignado = await studentsAPI.checkAssignedStudent(id);
+        const yaAsignado = await studentsAPI.checkIfAssignedStudent(id);
 
         if (yaAsignado) {
             alert('Estudiante ya asignado'); //valida por front si ya esta asignado estudiante

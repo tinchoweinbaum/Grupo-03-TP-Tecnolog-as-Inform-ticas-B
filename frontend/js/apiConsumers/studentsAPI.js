@@ -15,7 +15,7 @@ const baseAPI = createAPI('students');
 export const studentsAPI = { 
     ...baseAPI,
 
-    async checkAssignedStudent(id) {
+    async checkIfAssignedStudent(id) {
         const API_URL = `../../backend/server.php?module=studentsSubjects&student_id=${encodeURIComponent(id)}`;
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error("Error al chequear asignacion");

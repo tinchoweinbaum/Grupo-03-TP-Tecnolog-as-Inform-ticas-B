@@ -55,7 +55,7 @@ function getSubjectsByStudent($conn, $student_id)
 }
 
 //modificacion de funcion anterior para validacion 4) (estudiantes asignados)
-function getAssignedStudentCases($conn, $student_id) 
+function checkIfAssignedStudentCases($conn, $student_id) 
 {
     $sql = "SELECT * FROM students_subjects ss
         WHERE ss.student_id = ?";
