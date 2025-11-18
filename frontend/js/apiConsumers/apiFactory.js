@@ -21,20 +21,7 @@ export function createAPI(moduleName, config = {})
             body: JSON.stringify(data)
         });
 
-        if (!res.ok) {
-            // manda respuesta de error para obtener el mensaje
-            let errorMessage = `Error en ${method}`;
-            try {
-                const errorData = await res.json();
-                errorMessage = errorData.error || errorMessage;
-            } catch {
-                // si falla, se usa mensaje default
-            }
-            // crea error con codigo de status agregado
-            const error = new Error(errorMessage);
-            error.status = res.status;
-            throw error;
-        }
+        if (!res.ok) throw new Error(`Error en ${method}`);
         return await res.json();
     }
 

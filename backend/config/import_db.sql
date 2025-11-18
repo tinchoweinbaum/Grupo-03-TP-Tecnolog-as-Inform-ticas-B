@@ -9,6 +9,7 @@ CREATE DATABASE `students` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unic
 USE `students`;
 
 /*Crear usuario de la base de datos*/
+DROP USER IF EXISTS 'student'@'localhost';
 CREATE USER 'student'@'localhost' IDENTIFIED BY '12345';
 
 /*Otorgar todos los permisos sobre la base de datos*/

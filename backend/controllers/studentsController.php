@@ -77,10 +77,13 @@ function handlePut($conn)
 
 function handleDelete($conn) 
 {
-     $input = json_decode(file_get_contents("php://input"), true);
+    $input = json_decode(file_get_contents("php://input"), true);
 
-    if(!getAssignedStudentCases($conn,$input['id'])) { //si devuelve 1 o mas casos, entonces es falso, ya asignado
-        
+    if(getAssignedStudentCases($conn,$input['id'])) { //si devuelve 1 o mas casos entonces ya asignado
+        http_response_code(409);
+        echo json_encode(["error"=>"Estudiante ya en asignaciones"]);    
+    }
+    else {
         $result = deleteStudent($conn, $input['id']);
 
         if ($result['deleted'] > 0) 
@@ -91,11 +94,7 @@ function handleDelete($conn)
         {
             http_response_code(500);
             echo json_encode(["error" => "No se pudo eliminar"]);
-        }    
-    }
-    else {
-        http_response_code(409);
-        echo json_encode(["error"=>"No se puede eliminar estudiante hasta que se eliminen asignaciones con materias"]);
+        }
     }
 }
 ?>

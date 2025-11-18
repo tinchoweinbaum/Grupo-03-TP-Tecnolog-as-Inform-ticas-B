@@ -178,19 +178,23 @@ function fillForm(student)
 async function confirmDelete(id) 
 {
     if (!confirm('¿Estás seguro que deseas borrar este estudiante?')) return;
-  
+
     try 
     {
-        await studentsAPI.remove(id);
-        loadStudents();
+        const yaAsignado = await studentsAPI.checkAssignedStudent(id);
+
+        if (yaAsignado) {
+            alert('Estudiante ya asignado'); //valida por front si ya esta asignado estudiante
+            return;
+        }else{
+            await studentsAPI.remove(id);
+            loadStudents();
+        }
     } 
     catch (err) 
     {
-        //pregunta si es error por ya asociado, con codigo 409
-        if (err.status === 409) {
-            alert(err.message); //muestra el mensaje enviado desde el backend
-        }
-        console.log('Error al borrar:', err);
+        alert(err.message);
+        console.log(err.message);
     }
 }
   
