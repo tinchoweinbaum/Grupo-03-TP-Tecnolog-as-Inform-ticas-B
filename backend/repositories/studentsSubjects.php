@@ -18,18 +18,16 @@ function existeAssign($conn, $student_id, $subject_id) {
               FROM students_subjects
               WHERE student_id = ? AND subject_id = ?
               LIMIT 1";
-    # LIMIT 1 hace que MySQL deje de buscar cuando encuentra una coincidencia.
-    # COUNT(*) siempre devuelve una fila con un valor (0 o 1 en este caso).
 
-    $statement = $conn->prepare($query); #prepara la query pero todavía no la ejecuta, devuelve un objeto statement.
+    $statement = $conn->prepare($query);
 
-    $statement->bind_param("ii", $student_id, $subject_id); #Reemplaza los placeholders de la query (?). "ii" = integer, integer.
+    $statement->bind_param("ii", $student_id, $subject_id);
 
-    $statement->execute(); # Ejecuta la query.
+    $statement->execute(); 
 
-    $resultSql = $statement->get_result(); #Devuelve un objeto mysqli_result con la fila de resultado.
+    $resultSql = $statement->get_result();
 
-    $filaRes = $resultSql->fetch_assoc(); #Convierte esa fila en un array asociativo que tiene un solo campo que se llama "existe"
+    $filaRes = $resultSql->fetch_assoc(); 
 
     return $filaRes["existe"] == 1;
 }
