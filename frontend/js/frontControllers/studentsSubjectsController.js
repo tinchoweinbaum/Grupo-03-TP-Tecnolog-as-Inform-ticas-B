@@ -72,9 +72,9 @@ function setupFormHandler()
     {
         e.preventDefault(); /*Hace que no se refreshee toda la pagina*/
 
-        const relation = getFormData(); //relation tiene los datos ingresados x el usuario en un objeto.
+        const relation = getFormData();
 
-        const allRelations = await studentsSubjectsAPI.fetchAll(); //await hace que la ejecución espere a que la API termine de traer los datos del back
+        const allRelations = await studentsSubjectsAPI.fetchAll();
         
         if(valRelacionFront(relation.student_id,relation.subject_id,allRelations)){
             alert("Ya existe la relacion alumno/materia especificada.");
