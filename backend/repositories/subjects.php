@@ -16,24 +16,38 @@ function getAllSubjects($conn)
     return $conn->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
 
-//2.0
-function getPaginatedSubjects($conn, $limit, $offset) 
-{
-    $stmt = $conn->prepare("SELECT * FROM subjects LIMIT ? OFFSET ?");
-    $stmt->bind_param("ii", $limit, $offset);
+//habia hecho subjectExists(), pero me parece que esta es mas reutilizable
+function getSubjectByName($conn, $name){
+    $sql = "SELECT * FROM subjects WHERE LOWER(TRIM(name)) = LOWER(TRIM(?))";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $name);
     $stmt->execute();
     $result = $stmt->get_result();
+
+    // Si existe, devuelve el registro completo como array asociativo
+    if ($row = $result->fetch_assoc()) {
+        return $row;
+    }else
+        // Si no existe, devuelve null
+        return null;
+}
+
+//esto es del crud 2.0, crei que estaba
+function getPaginatedSubjects($conn, $limit, $offset){
+
+    $sql = "SELECT * FROM subjects LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii",$limit,$offset);
+    $stmt->execute();
+    $result= $stmt->get_result();
+
     return $result->fetch_all(MYSQLI_ASSOC);
 }
-
-//2.0
-function getTotalSubjects($conn) 
-{
+function getTotalSubjects($conn){
     $sql = "SELECT COUNT(*) AS total FROM subjects";
-    $result = $conn->query($sql);
-    return $result->fetch_assoc()['total'];
-}
 
+    return $conn->query($sql)->fetch_assoc()['total'];
+}
 function getSubjectById($conn, $id) 
 {
     $sql = "SELECT * FROM subjects WHERE id = ?";

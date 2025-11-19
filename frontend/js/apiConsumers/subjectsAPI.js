@@ -9,4 +9,19 @@
 */
 
 import { createAPI } from './apiFactory.js';
-export const subjectsAPI = createAPI('subjects');
+
+const moduleName = 'subjects';
+const baseAPI = createAPI(moduleName);
+
+export const subjectsAPI = { // deberia ir en apiFactory directamente, pero hay que ponerse de acuerdo en grupo para no generar conflictos
+    ...baseAPI,
+    
+    async checkExists(name) {
+        const API_URL = `../../backend/server.php?module=${moduleName}`;
+        const url = `${API_URL}&name=${encodeURIComponent(name)}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Error al verificar existencia");
+        const data = await res.json();
+        return data !== null;
+    }
+};

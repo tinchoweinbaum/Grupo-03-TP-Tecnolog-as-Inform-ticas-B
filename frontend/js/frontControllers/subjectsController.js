@@ -22,8 +22,23 @@ document.addEventListener('DOMContentLoaded', () =>
     setupSubjectFormHandler();
     setupCancelHandler();
     setupPaginationControls();//2.0
+    setupModalListeners();
 
 });
+
+function mostrarModalError(mensaje = 'La materia ya existe.') {
+    document.getElementById('mensajeError').textContent = mensaje;
+    document.getElementById('modalError').style.display = 'block';
+}
+
+function cerrarModalError() {
+    document.getElementById('modalError').style.display = 'none';
+}
+
+function setupModalListeners() {
+    document.getElementById('btnCerrarModalX').addEventListener('click', cerrarModalError);
+    document.getElementById('btnAceptarModal').addEventListener('click', cerrarModalError);
+}
 
 function setupSubjectFormHandler() 
 {
@@ -45,7 +60,12 @@ function setupSubjectFormHandler()
             }
             else
             {
-                await subjectsAPI.create(subject);
+                const existeMateria = await subjectsAPI.checkExists(subject.name);
+                if (existeMateria) {
+                    mostrarModalError('La materia ya existe.'); 
+                    return;
+                }else
+                    await subjectsAPI.create(subject);
             }
             
             form.reset();

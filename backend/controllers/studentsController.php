@@ -48,11 +48,10 @@ function handlePost($conn)
     $input = json_decode(file_get_contents("php://input"), true);
 
 
-    // agrego la condicion del if para verificar si el email ya existe
-    //le paso los parametros conn para conectarme a la base de datos e input para pasarle el dato email
+
     if(emailExiste($conn, $input['email']))
     {
-        http_response_code(400); // el error 400 de http significa bad request, peticion incorrecta a la base de datos
+        http_response_code(400); 
         echo json_encode(["error" => "el correo ya esta registrado"]);
     }
 

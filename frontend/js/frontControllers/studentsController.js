@@ -17,16 +17,15 @@ let totalPages = 1;
 const limit = 5;
 
 
-//esta funcion consulta al backend TODOS los estudiantes y comprueba si alguno tiene el email ya registrado
-async function emailExisteFront(email) {
-    const allStudents = await studentsAPI.fetchAll();//le pido al back la lista completa de los estudiantes y el await es por que esa funcion va a tardar entonces quiero que espere la respuesta
 
-    for (let i = 0; i < allStudents.length; i++) {//hago un for recorriendo todos los estudiantes para ver si alguno tiene el mismo email
+async function emailExisteFront(email) {
+    const allStudents = await studentsAPI.fetchAll();
+
+    for (let i = 0; i < allStudents.length; i++) {
         if (allStudents[i].email === email) {
             return true;
         }
     }
-
     return false;
 }
 
@@ -47,9 +46,9 @@ function setupFormHandler() {
 
         const student = getFormData();
 
-        if (!student.id) {//agregue este if para el caso en el que se va a crear un estudiante
-            const existe = await emailExisteFront(student.email);//llamo para saber si el email existe, el await es por que va a tardar
-            if (existe) {//si el email ya existe
+        if (!student.id) {
+            const existe = await emailExisteFront(student.email);
+            if (existe) {
                 alert("El email ya está registrado.");
                 return;
             }
