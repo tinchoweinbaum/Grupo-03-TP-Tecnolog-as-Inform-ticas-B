@@ -12,6 +12,11 @@ This project is an educational prototype of a CRUD (Create Read Update and Delet
 * Luis Manterola - full stack - Mar del Plata (Argentina)
 * Fernando Genin - full stack - Mar del Plata (Argentina)
 * Gabriel "Nico" Ferreira - full stack - Mar del Plata (Argentina)  
+*Grupo 03:
+*Andoni Catalano
+*Facundo Elizalde
+*Juan Mc kesey
+*Martín Weinbaum
 
 ## All other contributors and their affiliations:
 
