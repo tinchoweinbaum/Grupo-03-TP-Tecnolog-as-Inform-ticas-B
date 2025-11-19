@@ -85,7 +85,7 @@ function getSubjectsByStudent($conn, $student_id)
 }
 
 //modificacion de funcion anterior para validacion 4) (estudiantes asignados)
-function checkIfAssignedStudentCases($conn, $student_id) 
+function checkIfAssignedStudentBack($conn, $student_id) 
 {
     $sql = "SELECT * FROM students_subjects ss
         WHERE ss.student_id = ?";
@@ -94,9 +94,10 @@ function checkIfAssignedStudentCases($conn, $student_id)
     $stmt->execute();
 
     $result = $stmt->get_result();
-    $row = $result->fetch_assoc();
+    $rows = $result->fetch_all(MYSQLI_ASSOC);
     $stmt->close();
-    return $row['total'] > 0;
+
+    return count($rows) > 0;
 }
 
 function updateStudentSubject($conn, $id, $student_id, $subject_id, $approved) 

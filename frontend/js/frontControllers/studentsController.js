@@ -201,7 +201,7 @@ async function confirmDelete(id)
 
     try 
     {
-        const yaAsignado = await studentsAPI.checkIfAssignedStudent(id);
+        const yaAsignado = await studentsAPI.checkIfAssignedStudentFront(id);
 
         if (yaAsignado) {
             alert('Estudiante ya asignado'); //valida por front si ya esta asignado estudiante
@@ -213,7 +213,7 @@ async function confirmDelete(id)
     } 
     catch (err) 
     {
-        alert(err.message);
+        alert('error al eliminar estudiante:', err.message);
         console.log(err.message);
     }
 }

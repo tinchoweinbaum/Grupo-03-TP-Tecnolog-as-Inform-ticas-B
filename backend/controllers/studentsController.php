@@ -91,7 +91,7 @@ function handleDelete($conn)
 {
     $input = json_decode(file_get_contents("php://input"), true);
 
-    if(checkIfAssignedStudentCases($conn,$input['id'])) { //ya asignado 
+    if(checkIfAssignedStudentBack($conn,$input['id'])) { //ya asignado 
         http_response_code(409);
         echo json_encode(["error"=>"Estudiante ya en asignaciones"]);    
     }
