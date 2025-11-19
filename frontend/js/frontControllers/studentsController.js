@@ -17,6 +17,7 @@ let totalPages = 1;
 const limit = 5;
 
 
+
 async function emailExisteFront(email) {
     const allStudents = await studentsAPI.fetchAll();
 
