@@ -16,17 +16,6 @@ let currentPage = 1;
 let totalPages = 1;
 const limit = 5;
 
-async function emailExisteFront(email) {
-    const allStudents = await studentsAPI.fetchAll();
-
-    for (let i = 0; i < allStudents.length; i++) {
-        if (allStudents[i].email === email) {
-            return true;
-        }
-    }
-    return false;
-}
-
 document.addEventListener('DOMContentLoaded', () => 
 {
     loadStudents();
@@ -34,35 +23,30 @@ document.addEventListener('DOMContentLoaded', () =>
     setupCancelHandler();
     setupPaginationControls();//2.0
 });
-
-function setupFormHandler() {
+  
+function setupFormHandler()
+{
     const form = document.getElementById('studentForm');
-
-    form.addEventListener('submit', async e => {
+    form.addEventListener('submit', async e => 
+    {
         e.preventDefault();
-
         const student = getFormData();
-
-        if (!student.id) {
-            const existe = await emailExisteFront(student.email);
-            if (existe) {
-                alert("El email ya está registrado.");
-                return;
-            }
-        }
-
-        try {
-            if (student.id) {
+    
+        try 
+        {
+            if (student.id) 
+            {
                 await studentsAPI.update(student);
-            } else {
+            } 
+            else 
+            {
                 await studentsAPI.create(student);
             }
-
             clearForm();
             loadStudents();
         }
-        catch (err) {
-            alert(err.message);
+        catch (err)
+        {
             console.error(err.message);
         }
     });
